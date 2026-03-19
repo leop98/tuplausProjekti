@@ -2,17 +2,17 @@
 
 Tuplaus on pokeripeleistä tuttu korttipeli, jossa pelaaja yrittää arvata onko edessä oleva kortti pieni vai suuri. Kortit 1–6 ovat pieniä, kortit 8–13 suuria. Jos kortti on 7, pelaaja häviää aina.
 
-Tämä repositorio toteuttaa pelimoottorin — palvelimen, joka tarjoaa HTTP-rajapinnan peli-clienteille ja pyörittää pelilogiikan. Peli-clienttia ei ole toteutettu.
+Tämä repositorio toteuttaa pelimoottorin: palvelimen, joka tarjoaa HTTP-rajapinnan peli-clienteille ja pyörittää pelilogiikan. Peli-clienttia ei ole toteutettu.
 
 ## Teknologiat
 
 - **TypeScript** + **Node.js**
-- **Express** — HTTP-palvelin
-- **MySQL** — tietokanta
-- **mysql2** — tietokantakirjasto
-- **Docker** + **Docker Compose** — kontittaminen
-- **Vitest** — testaus
-- **ESLint** — koodin laatu
+- **Express**: HTTP-palvelin
+- **MySQL**: tietokanta
+- **mysql2**: tietokantakirjasto
+- **Docker** + **Docker Compose**: kontittaminen
+- **Vitest**: testaus
+- **ESLint**: koodin laatu
 
 ## Esimerkkikomennot (powershell ja bash)
 
@@ -88,7 +88,7 @@ curl -s http://localhost:3000/players/teppo123/history
 
 ## Käynnistys Dockerilla
 
-Vaatii ainoastaan [Docker Desktopin](https://www.docker.com/products/docker-desktop/).
+Vaatii [Docker Desktopin](https://www.docker.com/products/docker-desktop/).
 
 ```bash
 docker compose up --build
@@ -106,9 +106,7 @@ docker compose run --rm test
 
 Vaatii:
 - Node.js
-- MySQL-palvelin paikallisesti
-- Tietokanta `tupla_db` ja testitietokanta `tupla_test` luotuna
-- MySQL-käyttäjä `tupla` tunnuksella `tupla_pass` ja oikeudet molempiin tietokantoihin
+- MySQL
 
 Asenna riippuvuudet:
 
@@ -169,9 +167,9 @@ Vastaus `200`:
 {
   "id": "teppo123",
   "name": "Teppo",
-  "balance": 900,
-  "pendingWin": 200,
-  "inGame": true
+  "balance": 1000,
+  "pendingWin": 0,
+  "inGame": false
 }
 ```
 
@@ -204,10 +202,10 @@ Vastaus `200`:
 ```
 
 Virheet:
-- `400` — panos tai valinta virheellinen
-- `402` — saldo ei riitä
-- `404` — pelaajaa ei löydy
-- `409` — kierros jo käynnissä
+- `400`: panos tai valinta virheellinen
+- `402`: saldo ei riitä
+- `404`: pelaajaa ei löydy
+- `409`: kierros jo käynnissä
 
 ---
 
@@ -237,9 +235,9 @@ Vastaus `200`:
 ```
 
 Virheet:
-- `400` — valinta virheellinen
-- `404` — pelaajaa ei löydy
-- `409` — ei aktiivista kierrosta
+- `400`: valinta virheellinen
+- `404`: pelaajaa ei löydy
+- `409`: ei aktiivista kierrosta
 
 ---
 
@@ -257,8 +255,8 @@ Vastaus `200`:
 ```
 
 Virheet:
-- `404` — pelaajaa ei löydy
-- `409` — ei aktiivista kierrosta
+- `404`: pelaajaa ei löydy
+- `409`: ei aktiivista kierrosta
 
 ---
 
@@ -310,6 +308,6 @@ Vastaus `200`:
 
 ## Tekniset ratkaisut
 
-**Palvelinpuolen pelitila** — `pending_win` ja `in_game` on lisätty `players`-tauluun pelitilan hallintaa varten. Tämä toteutus tehtiin estämään clientia lähettämästä minkä tahansa summan kotiutettavaksi. Palvelinpuolinen tila estää tämän: voittosumma luetaan aina tietokannasta, ei pyynnöstä. `in_game`-lippu estää lisäksi uuden kierroksen aloittamisen ennen kuin edellinen on ratkaistu.
+**Palvelinpuolen pelitila**: `pending_win` ja `in_game` on lisätty `players`-tauluun pelitilan hallintaa varten. Tämä toteutus tehtiin estämään clientia lähettämästä minkä tahansa summan kotiutettavaksi. Palvelinpuolinen tila estää tämän: voittosumma luetaan aina tietokannasta, ei pyynnöstä. `in_game`-lippu estää lisäksi uuden kierroksen aloittamisen ennen kuin edellinen on ratkaistu.
 
-**Tietokantatransaktiot** — kaikki saldomuutokset tehdään transaktiossa `FOR UPDATE` -lukolla, joka estää kilpailutilanteen saman pelaajan samanaikaisissa pyynnöissä.
+**Tietokantatransaktiot**: kaikki saldomuutokset tehdään transaktiossa `FOR UPDATE` -lukolla, joka estää kilpailutilanteen saman pelaajan samanaikaisissa pyynnöissä.
