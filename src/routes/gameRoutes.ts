@@ -84,7 +84,7 @@ export function createRouter(pool: Pool): Router {
       if (e instanceof Error) {
         if (e.message === 'Player not found') {return err(res, 404, e.message);}
         if (e.message === 'Insufficient balance') {return err(res, 402, e.message);}
-        if (e.message === 'Round already in progress — cashout or double first') {return err(res, 409, e.message);}
+        if (e.message === 'Round already in progress - cashout or double first') {return err(res, 409, e.message);}
       }
       throw e;
     }
@@ -115,7 +115,7 @@ export function createRouter(pool: Pool): Router {
     } catch (e: unknown) {
       if (e instanceof Error) {
         if (e.message === 'Player not found') {return err(res, 404, e.message);}
-        if (e.message === 'No active round — play first') {return err(res, 409, e.message);}
+        if (e.message === 'No active round - play first') {return err(res, 409, e.message);}
       }
       throw e;
     }
@@ -128,7 +128,7 @@ export function createRouter(pool: Pool): Router {
     } catch (e: unknown) {
       if (e instanceof Error) {
         if (e.message === 'Player not found') {return err(res, 404, e.message);}
-        if (e.message === 'No active round — nothing to cash out') {return err(res, 409, e.message);}
+        if (e.message === 'No active round - nothing to cash out') {return err(res, 409, e.message);}
       }
       throw e;
     }
