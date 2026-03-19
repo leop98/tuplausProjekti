@@ -107,7 +107,7 @@ export async function doubleDown(
     // Tuplaus on aina uusi tapahtuma, joka tallennetaan erikseen, bet on se summa, joka oli panoksena tuplattavana, payout on tuplauksen tulos
     await connection.execute(
       'INSERT INTO game_events (id, created_at, player_id, bet, choice, card, payout) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [eventId, timestamp.toISOString().slice(0, 23).replace('T', ' '), playerId, currentPending, choice, card, newPendingWin],
+      [eventId, timestamp, playerId, currentPending, choice, card, newPendingWin],
     );
 
     await connection.commit();
