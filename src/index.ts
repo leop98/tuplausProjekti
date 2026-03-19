@@ -1,8 +1,10 @@
+// Sovelluksen käynnistyspiste
 import 'dotenv/config';
 import { initDb } from './db/schema';
 import { createPool } from './repositories/pool';
 import { createApp } from './app';
 
+// Luetaan asetukset ympäristömuuttujista, oletusarvot kehitysympäristöä varten
 const port = parseInt(process.env.PORT ?? '3000', 10);
 
 const pool = createPool({
@@ -13,11 +15,12 @@ const pool = createPool({
   database: process.env.DB_NAME     ?? 'tupla_db',
 });
 
+// Alustetaan tietokanta ensin, sitten käynnistetään palvelin
 async function main(): Promise<void> {
   await initDb(pool);
   const app = createApp(pool);
   app.listen(port, () => {
-    console.error(`Tupla-pelimoottori käynnissä portissa ${port}`);
+    console.log(`Tupla-pelimoottori käynnissä portissa ${port}`);
   });
 }
 

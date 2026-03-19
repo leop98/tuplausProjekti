@@ -1,3 +1,4 @@
+// MySQL-yhteyspoolin luominen, käytetään sekä sovelluksessa että testeissä
 import mysql from 'mysql2/promise';
 import type { Pool } from 'mysql2/promise';
 
@@ -17,7 +18,7 @@ export function createPool(config: DbConfig): Pool {
     password: config.password,
     database: config.database,
     waitForConnections: true,
-    connectionLimit: 10,
-    timezone: 'Z',
+    connectionLimit: 10, // palvelimen kuormitusta estämistä varten
+    timezone: 'Z',  // Varmistaa, että Date-objektit tallennetaan UTC-aikavyöhykkeellä
   });
 }

@@ -1,9 +1,9 @@
+// Pelaajan tietokantaoperaatiot: pelaajan luominen ja hakeminen
 import type { Player } from '../types/types';
 import type { Pool, RowDataPacket } from 'mysql2/promise';
 
 async function createPlayer(pool: Pool, id: string, name: string, balance: number): Promise<Player> {
   try {
-    // CHANGE: INSERT now includes pending_win and in_game (both use column defaults)
     await pool.execute(
       'INSERT INTO players (id, name, balance) VALUES (?, ?, ?)',
       [id, name, balance],
@@ -14,11 +14,9 @@ async function createPlayer(pool: Pool, id: string, name: string, balance: numbe
     }
     throw error;
   }
-  // CHANGE: return includes new fields at their initial values
   return { id, name, balance, pendingWin: 0, inGame: false };
 }
 
-// CHANGE: getPlayer maps the two new columns
 async function getPlayer(pool: Pool, id: string): Promise<Player | null> {
   const [rows] = await pool.execute<RowDataPacket[]>(
     'SELECT * FROM players WHERE id = ?',
@@ -32,8 +30,8 @@ async function getPlayer(pool: Pool, id: string): Promise<Player | null> {
     id: row.id,
     name: row.name,
     balance: row.balance,
-    pendingWin: row.pending_win,  // ADDITION
-    inGame: Boolean(row.in_game), // ADDITION: MySQL returns BOOLEAN as 0/1
+    pendingWin: row.pending_win,
+    inGame: Boolean(row.in_game),
   };
 }
 

@@ -1,8 +1,9 @@
+// Pelitapahtumien tietokantaoperaatiot: kierroksen pelaaminen, tuplaus, kotiutus ja historia
 import type { Pool, RowDataPacket } from 'mysql2/promise';
 import type { GameEvent, Choice, RoundResult } from '../types/types';
 
-// CHANGE: playRound no longer takes payout or skipBalanceUpdate — game state is fully managed here
-async function playRound(
+// Pelaa kierroksen, vähentää panoksen saldosta, tallentaa tuloksen ja asettaa odottavan voiton.
+export async function playRound(
   pool: Pool,
   eventId: string,
   timestamp: Date,
@@ -25,7 +26,7 @@ async function playRound(
       throw new Error('Player not found');
     }
 
-    // ADDITION: block new bets while a win is still pending
+    // Estää uuden kierroksen aloittamisen jos edellinen on vielä kesken.
     if (rows[0].in_game) {
       await connection.rollback();
       throw new Error('Round already in progress — cashout or double first');
@@ -37,9 +38,8 @@ async function playRound(
       throw new Error('Insufficient balance');
     }
 
-    // CHANGE: payout is no longer passed in — we derive it and store it on the player row
     const payout = won ? bet * 2 : 0;
-    const newBalance = currentBalance - bet;  // bet deducted immediately; win held separately
+    const newBalance = currentBalance - bet;
     const pendingWin = payout;
     const inGame = won;
 
@@ -63,8 +63,8 @@ async function playRound(
   }
 }
 
-// ADDITION: doubleDown reads pending_win from DB — client cannot supply its own amount
-async function doubleDown(
+// Tuplaa odottavan voiton: lukee summan tietokannasta, ei hyväksy sitä pyynnössä.
+export async function doubleDown(
   pool: Pool,
   eventId: string,
   timestamp: Date,
@@ -86,7 +86,7 @@ async function doubleDown(
       throw new Error('Player not found');
     }
 
-    // ADDITION: can only double when in_game is TRUE (i.e. there is a pending win)
+    // voidaan tuplata vain aktiivisessa kierroksessa, joten in_game on pakko olla TRUE
     if (!rows[0].in_game) {
       await connection.rollback();
       throw new Error('No active round — play first');
@@ -98,13 +98,13 @@ async function doubleDown(
     const newPendingWin = won ? currentPending * 2 : 0;
     const inGame = won;
 
-    // On a loss the pending win is simply zeroed; balance was already deducted during play
+    // häviö nollaa pending_win, balance väheni jo alkuperäisessä playRoundissa
     await connection.execute(
       'UPDATE players SET pending_win = ?, in_game = ? WHERE id = ?',
       [newPendingWin, inGame, playerId],
     );
 
-    // Record the double attempt as its own game event (bet = what was at stake, payout = result)
+    // Tuplaus on aina uusi tapahtuma, joka tallennetaan erikseen, bet on se summa, joka oli panoksena tuplattavana, payout on tuplauksen tulos
     await connection.execute(
       'INSERT INTO game_events (id, created_at, player_id, bet, choice, card, payout) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [eventId, timestamp.toISOString().slice(0, 23).replace('T', ' '), playerId, currentPending, choice, card, newPendingWin],
@@ -120,8 +120,8 @@ async function doubleDown(
   }
 }
 
-// CHANGE: cashout reads pending_win from DB — no amount parameter
-async function cashout(pool: Pool, playerId: string): Promise<number> {
+// Kotiuttaa odottavan voiton: lisää sen saldoon ja nollaa pelitilan.
+export async function cashout(pool: Pool, playerId: string): Promise<number> {
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
@@ -135,7 +135,7 @@ async function cashout(pool: Pool, playerId: string): Promise<number> {
       throw new Error('Player not found');
     }
 
-    // ADDITION: reject cashout when there is nothing to collect
+    // Voi kutsua vain jos in_game on TRUE (eli on jotain kotiutettavaa).
     if (!rows[0].in_game) {
       await connection.rollback();
       throw new Error('No active round — nothing to cash out');
@@ -158,7 +158,7 @@ async function cashout(pool: Pool, playerId: string): Promise<number> {
   }
 }
 
-async function getPlayerHistory(pool: Pool, playerId: string): Promise<GameEvent[]> {
+export async function getPlayerHistory(pool: Pool, playerId: string): Promise<GameEvent[]> {
   const [rows] = await pool.execute<RowDataPacket[]>(
     'SELECT * FROM game_events WHERE player_id = ? ORDER BY created_at ASC',
     [playerId],
@@ -173,5 +173,3 @@ async function getPlayerHistory(pool: Pool, playerId: string): Promise<GameEvent
     payout: row.payout,
   }));
 }
-
-export {  playRound, doubleDown, cashout, getPlayerHistory };

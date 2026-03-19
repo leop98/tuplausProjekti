@@ -1,3 +1,5 @@
+// TypeScript-tyypit ja -interfacet, tietokantamallit, pyyntöjen rakenteet ja virhevastaukset
+
 // pelaajan valinta
 export type Choice = 'small' | 'large';
 
@@ -23,6 +25,7 @@ export interface GameEvent {
 
 // POST /players pyyntö
 export interface CreatePlayerRequest {
+  id: string;
   name: string;
   balance: number;
 }
@@ -38,23 +41,12 @@ export interface DoubleRequest {
   choice: Choice;
 }
 
-// POST /player/id/cashout vastaus
-export interface CashoutResult {
-  balance: number;
-}
-
-// GET /player/id/history vastaus
-export interface History {
-  player_id: string;
-  events: GameEvent[];
-}
-
-
 // virhevastaus
 export interface ErrorResponse {
   error: string;
 }
 
+// playRound ja doubleDown -funktioiden palautustyyppi
 export interface RoundResult {
   balance: number;
   pendingWin: number;

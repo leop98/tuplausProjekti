@@ -11,7 +11,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      # REMOVED: schema.sql mount — table creation is handled by initDb() in schema.ts
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-utupla", "-ptupla_pass"]
       interval: 5s
@@ -24,7 +24,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: production  # ADDITION
+      NODE_ENV: production
       PORT: 3000
       DB_HOST: db
       DB_PORT: 3306
@@ -35,6 +35,22 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  # Run with: docker compose run --rm test
+  test:
+    build: .
+    environment:
+      NODE_ENV: test
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: tupla
+      DB_PASSWORD: tupla_pass
+      DB_NAME: tupla_db
+      TEST_DB_NAME: tupla_test
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npm test
 
 volumes:
   db_data:

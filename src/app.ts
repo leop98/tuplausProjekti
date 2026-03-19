@@ -1,9 +1,10 @@
+// Express-sovelluksen kokoonpano: middleware, staattiset tiedostot, reitit ja virheenkäsittely
 import type { Application, Request, Response, NextFunction } from 'express';
 import express from 'express';
 import type { Pool } from 'mysql2/promise';
 import { createRouter } from './routes/gameRoutes';
 import type { ErrorResponse } from './types/types';
-import path from 'path/win32';
+import path from 'path';
 
 export function createApp(pool: Pool): Application {
   const app = express();
@@ -22,7 +23,7 @@ export function createApp(pool: Pool): Application {
   });
 
   // Globaali virheenkäsittelijä
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
     console.error('Unhandled error:', err);
     const body: ErrorResponse = { error: 'Internal server error' };
