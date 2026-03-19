@@ -1,3 +1,6 @@
+# HUOMIO: salasanat on kovakoodattu kehitysympäristöä varten, älä tee näin tuotannossa!
+# monimutkaisuuden vähentämisen kannalta tehty harkittu ratkaisu
+
 services:
   db:
     image: mysql:8.0

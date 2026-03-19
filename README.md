@@ -14,7 +14,7 @@ Tämä repositorio toteuttaa pelimoottorin — palvelimen, joka tarjoaa HTTP-raj
 - **Vitest** — testaus
 - **ESLint** — koodin laatu
 
-## Esimerkkikomennot
+## Esimerkkikomennot (powershell ja bash)
 
 **Luo pelaaja**
 ```powershell
@@ -310,6 +310,6 @@ Vastaus `200`:
 
 ## Tekniset ratkaisut
 
-**Palvelinpuolen pelitila** — `pending_win` ja `in_game` tallennetaan tietokantaan palvelimella. Peli-client ei voi vaikuttaa voittosummaan, koska se luetaan aina tietokannasta eikä pyynnön rungosta.
+**Palvelinpuolen pelitila** — `pending_win` ja `in_game` on lisätty `players`-tauluun pelitilan hallintaa varten. Tämä toteutus tehtiin estämään clientia lähettämästä minkä tahansa summan kotiutettavaksi. Palvelinpuolinen tila estää tämän: voittosumma luetaan aina tietokannasta, ei pyynnöstä. `in_game`-lippu estää lisäksi uuden kierroksen aloittamisen ennen kuin edellinen on ratkaistu.
 
 **Tietokantatransaktiot** — kaikki saldomuutokset tehdään transaktiossa `FOR UPDATE` -lukolla, joka estää kilpailutilanteen saman pelaajan samanaikaisissa pyynnöissä.
