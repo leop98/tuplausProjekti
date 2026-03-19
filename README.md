@@ -14,6 +14,46 @@ Tämä repositorio toteuttaa pelimoottorin: palvelimen, joka tarjoaa HTTP-rajapi
 - **Vitest**: testaus
 - **ESLint**: koodin laatu
 
+## Käynnistys Dockerilla
+
+Vaatii [Docker Desktopin](https://www.docker.com/products/docker-desktop/).
+
+```bash
+docker compose up --build
+```
+
+Palvelin käynnistyy osoitteeseen `http://localhost:3000`. Docker luo automaattisesti MySQL-tietokannan ja tarvittavat taulut.
+
+### Testien ajaminen Dockerilla
+
+```bash
+docker compose run --rm test
+```
+
+## Käynnistys ilman Dockeria
+
+Vaatii:
+- Node.js
+- MySQL
+
+Asenna riippuvuudet:
+
+```bash
+npm install
+```
+
+Käynnistä kehityspalvelin:
+
+```bash
+npm run dev
+```
+
+### Testien ajaminen ilman Dockeria
+
+```bash
+npm test
+```
+
 ## Esimerkkikomennot (powershell ja bash)
 
 **Luo pelaaja**
@@ -85,46 +125,6 @@ curl -s http://localhost:3000/players/teppo123/history
 ```
 
 ---
-
-## Käynnistys Dockerilla
-
-Vaatii [Docker Desktopin](https://www.docker.com/products/docker-desktop/).
-
-```bash
-docker compose up --build
-```
-
-Palvelin käynnistyy osoitteeseen `http://localhost:3000`. Docker luo automaattisesti MySQL-tietokannan ja tarvittavat taulut.
-
-### Testien ajaminen Dockerilla
-
-```bash
-docker compose run --rm test
-```
-
-## Käynnistys ilman Dockeria
-
-Vaatii:
-- Node.js
-- MySQL
-
-Asenna riippuvuudet:
-
-```bash
-npm install
-```
-
-Käynnistä kehityspalvelin:
-
-```bash
-npm run dev
-```
-
-### Testien ajaminen ilman Dockeria
-
-```bash
-npm test
-```
 
 ## HTTP-rajapinta
 

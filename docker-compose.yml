@@ -39,7 +39,7 @@ services:
       db:
         condition: service_healthy
 
-  # Run with: docker compose run --rm test
+  # docker compose run --rm test
   test:
     build: .
     environment:

@@ -29,7 +29,7 @@ export async function playRound(
     // Estää uuden kierroksen aloittamisen jos edellinen on vielä kesken.
     if (rows[0].in_game) {
       await connection.rollback();
-      throw new Error('Round already in progress — cashout or double first');
+      throw new Error('Round already in progress - cashout or double first');
     }
 
     const currentBalance: number = rows[0].balance;
@@ -89,7 +89,7 @@ export async function doubleDown(
     // voidaan tuplata vain aktiivisessa kierroksessa, joten in_game on pakko olla TRUE
     if (!rows[0].in_game) {
       await connection.rollback();
-      throw new Error('No active round — play first');
+      throw new Error('No active round - play first');
     }
 
     const currentBalance: number = rows[0].balance;
@@ -138,7 +138,7 @@ export async function cashout(pool: Pool, playerId: string): Promise<number> {
     // Voi kutsua vain jos in_game on TRUE (eli on jotain kotiutettavaa).
     if (!rows[0].in_game) {
       await connection.rollback();
-      throw new Error('No active round — nothing to cash out');
+      throw new Error('No active round - nothing to cash out');
     }
 
     const newBalance = rows[0].balance + rows[0].pending_win;

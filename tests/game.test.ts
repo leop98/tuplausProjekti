@@ -55,13 +55,13 @@ describe('playRound', () => {
   it('throws when a round is already in progress', async () => {
     await playRound(pool, EVENT_ID, new Date(), PLAYER_ID, 100, 'small', 3, true);
     await expect(playRound(pool, 'another-event', new Date(), PLAYER_ID, 100, 'small', 3, true))
-      .rejects.toThrow('Round already in progress — cashout or double first');
+      .rejects.toThrow('Round already in progress - cashout or double first');
   });
 });
 
 describe('doubleDown', () => {
   beforeEach(async () => {
-    // Start each double test from a winning state
+    // testi olettaa, että pelaaja on juuri voittanut kierroksen, joten asetetaan tilanne valmiiksi
     await playRound(pool, EVENT_ID, new Date(), PLAYER_ID, 100, 'small', 3, true);
   });
 
@@ -82,7 +82,7 @@ describe('doubleDown', () => {
   it('throws when no active round exists', async () => {
     await cashout(pool, PLAYER_ID);
     await expect(doubleDown(pool, 'double-event', new Date(), PLAYER_ID, 'large', 9, true))
-      .rejects.toThrow('No active round — play first');
+      .rejects.toThrow('No active round - play first');
   });
 
   it('throws when player is not found', async () => {
@@ -100,7 +100,7 @@ describe('cashout', () => {
 
   it('throws when no active round exists', async () => {
     await expect(cashout(pool, PLAYER_ID))
-      .rejects.toThrow('No active round — nothing to cash out');
+      .rejects.toThrow('No active round - nothing to cash out');
   });
 
   it('throws when player is not found', async () => {
