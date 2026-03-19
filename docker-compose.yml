@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: tupla_root
+      MYSQL_DATABASE: tupla_db
+      MYSQL_USER: tupla
+      MYSQL_PASSWORD: tupla_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # REMOVED: schema.sql mount — table creation is handled by initDb() in schema.ts
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-utupla", "-ptupla_pass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production  # ADDITION
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: tupla
+      DB_PASSWORD: tupla_pass
+      DB_NAME: tupla_db
+      TEST_DB_NAME: tupla_test
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
