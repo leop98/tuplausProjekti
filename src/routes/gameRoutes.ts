@@ -3,7 +3,8 @@ import { Router } from 'express';
 import { drawCard, roundResult } from '../game/engine';
 import type { Choice, CreatePlayerRequest, PlayRequest, DoubleRequest, ErrorResponse } from '../types/types';
 import type { Pool } from 'mysql2/promise';
-import { createPlayer, getPlayer, playRound, doubleDown, cashout, getPlayerHistory } from '../repositories/gameEventRepository'; // CHANGE: doubleDown replaces old playRound usage in double route; cashout no longer takes amount
+import { playRound, doubleDown, cashout, getPlayerHistory } from '../repositories/gameEventRepository'; // CHANGE: doubleDown replaces old playRound usage in double route; cashout no longer takes amount
+import { createPlayer, getPlayer } from '../repositories/playerRepository';
 import { v4 as uuidv4 } from 'uuid';
 
 function err(res: Response, status: number, message: string): void {

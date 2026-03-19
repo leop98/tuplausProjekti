@@ -16,7 +16,7 @@ export async function initDb(pool: Pool): Promise<void> {
   await pool.execute(`
     CREATE TABLE IF NOT EXISTS game_events (
       id           VARCHAR(36)  NOT NULL PRIMARY KEY,   -- UUID
-      timestamp    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- millisekunnin tarkkuus
+      created_at   DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
       player_id    VARCHAR(255) NOT NULL,
       bet          INT          NOT NULL,
       choice       ENUM('small','large') NOT NULL,

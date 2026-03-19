@@ -23,7 +23,6 @@ export interface GameEvent {
 
 // POST /players pyyntö
 export interface CreatePlayerRequest {
-  id: string;
   name: string;
   balance: number;
 }
@@ -34,27 +33,9 @@ export interface PlayRequest {
   choice: Choice;
 }
 
-// POST /player/id/play vastaus
-export interface PlayResult {
-  eventId: string;
-  card: number;
-  won: boolean;
-  payout: number;
-  balance: number;
-}
-
 // POST /player/id/double pyyntö
 export interface DoubleRequest {
   choice: Choice;
-}
-
-// POST /player/id/double vastaus
-export interface DoubleResult {
-  eventId: string;
-  card: number;
-  won: boolean;
-  payout: number;
-  balance: number;
 }
 
 // POST /player/id/cashout vastaus
@@ -72,4 +53,10 @@ export interface History {
 // virhevastaus
 export interface ErrorResponse {
   error: string;
+}
+
+export interface RoundResult {
+  balance: number;
+  pendingWin: number;
+  inGame: boolean;
 }

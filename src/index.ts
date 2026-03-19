@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { initDb } from './db/schema';
-import { createPool } from './repositories/gameEventRepository';
+import { createPool } from './repositories/pool';
 import { createApp } from './app';
 
 const port = parseInt(process.env.PORT ?? '3000', 10);
