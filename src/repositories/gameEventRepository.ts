@@ -1,5 +1,5 @@
 // Pelitapahtumien tietokantaoperaatiot: kierroksen pelaaminen, tuplaus, kotiutus ja historia
-import type { Pool, RowDataPacket } from 'mysql2/promise';
+import type { Pool, RowDataPacket } from 'mysql2/promise'; // rowDataPacket tarvitaan, jotta MySQL-kyselyn tulokset saa tyypitettyä oikein
 import type { GameEvent, Choice, RoundResult } from '../types/types';
 
 // Pelaa kierroksen, vähentää panoksen saldosta, tallentaa tuloksen ja asettaa odottavan voiton.

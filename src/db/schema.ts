@@ -28,7 +28,8 @@ export async function initDb(pool: Pool): Promise<void> {
   `);
 }
 
-// Pudottaa testikannan taulut testien jälkeen
+// Pudottaa testikannan taulut testien jälkeen. HUOM! Tämä kannattaisi eristää paremmin,
+// mutta harjoitus yksinkertaisuuden vuoksi toteutettu näin.
 export async function dropTables(pool: Pool): Promise<void> {
   await pool.execute('DROP TABLE IF EXISTS game_events');
   await pool.execute('DROP TABLE IF EXISTS players');
